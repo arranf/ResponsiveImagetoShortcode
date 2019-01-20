@@ -1,0 +1,2 @@
+* Turn into command line program
+* Rewrite in Rust
