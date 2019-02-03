@@ -1,2 +1,5 @@
-* Turn into command line program
+* Process initial image using compression (mozjpeg etc.)
+* Upload image to responsivebreakpoints.com
+* Upload breakpoint assets to S3
+* Append data to hugo JSON file
 * Rewrite in Rust

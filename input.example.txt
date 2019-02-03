@@ -1,0 +1,62 @@
+
+<picture>
+<source
+media="(max-width: 767px)"
+sizes="(max-width: 1080px) 100vw, 1080px"
+srcset="
+bartlomiej-valery-walendziak-w2-d_1_ydwuhc_ar_1_1,c_fill,g_auto__c_scale,w_200.jpg 200w,
+bartlomiej-valery-walendziak-w2-d_1_ydwuhc_ar_1_1,c_fill,g_auto__c_scale,w_314.jpg 314w,
+bartlomiej-valery-walendziak-w2-d_1_ydwuhc_ar_1_1,c_fill,g_auto__c_scale,w_407.jpg 407w,
+bartlomiej-valery-walendziak-w2-d_1_ydwuhc_ar_1_1,c_fill,g_auto__c_scale,w_482.jpg 482w,
+bartlomiej-valery-walendziak-w2-d_1_ydwuhc_ar_1_1,c_fill,g_auto__c_scale,w_566.jpg 566w,
+bartlomiej-valery-walendziak-w2-d_1_ydwuhc_ar_1_1,c_fill,g_auto__c_scale,w_639.jpg 639w,
+bartlomiej-valery-walendziak-w2-d_1_ydwuhc_ar_1_1,c_fill,g_auto__c_scale,w_706.jpg 706w,
+bartlomiej-valery-walendziak-w2-d_1_ydwuhc_ar_1_1,c_fill,g_auto__c_scale,w_774.jpg 774w,
+bartlomiej-valery-walendziak-w2-d_1_ydwuhc_ar_1_1,c_fill,g_auto__c_scale,w_838.jpg 838w,
+bartlomiej-valery-walendziak-w2-d_1_ydwuhc_ar_1_1,c_fill,g_auto__c_scale,w_901.jpg 901w,
+bartlomiej-valery-walendziak-w2-d_1_ydwuhc_ar_1_1,c_fill,g_auto__c_scale,w_955.jpg 955w,
+bartlomiej-valery-walendziak-w2-d_1_ydwuhc_ar_1_1,c_fill,g_auto__c_scale,w_1022.jpg 1022w,
+bartlomiej-valery-walendziak-w2-d_1_ydwuhc_ar_1_1,c_fill,g_auto__c_scale,w_1073.jpg 1073w,
+bartlomiej-valery-walendziak-w2-d_1_ydwuhc_ar_1_1,c_fill,g_auto__c_scale,w_1080.jpg 1080w">
+<source
+media="(min-width: 768px) and (max-width: 991px)"
+sizes="(max-width: 1600px) 90vw, 1440px"
+srcset="
+bartlomiej-valery-walendziak-w2-d_1_ydwuhc_ar_4_3,c_fill,g_auto__c_scale,w_692.jpg 692w,
+bartlomiej-valery-walendziak-w2-d_1_ydwuhc_ar_4_3,c_fill,g_auto__c_scale,w_770.jpg 770w,
+bartlomiej-valery-walendziak-w2-d_1_ydwuhc_ar_4_3,c_fill,g_auto__c_scale,w_845.jpg 845w,
+bartlomiej-valery-walendziak-w2-d_1_ydwuhc_ar_4_3,c_fill,g_auto__c_scale,w_919.jpg 919w,
+bartlomiej-valery-walendziak-w2-d_1_ydwuhc_ar_4_3,c_fill,g_auto__c_scale,w_984.jpg 984w,
+bartlomiej-valery-walendziak-w2-d_1_ydwuhc_ar_4_3,c_fill,g_auto__c_scale,w_1047.jpg 1047w,
+bartlomiej-valery-walendziak-w2-d_1_ydwuhc_ar_4_3,c_fill,g_auto__c_scale,w_1114.jpg 1114w,
+bartlomiej-valery-walendziak-w2-d_1_ydwuhc_ar_4_3,c_fill,g_auto__c_scale,w_1181.jpg 1181w,
+bartlomiej-valery-walendziak-w2-d_1_ydwuhc_ar_4_3,c_fill,g_auto__c_scale,w_1247.jpg 1247w,
+bartlomiej-valery-walendziak-w2-d_1_ydwuhc_ar_4_3,c_fill,g_auto__c_scale,w_1307.jpg 1307w,
+bartlomiej-valery-walendziak-w2-d_1_ydwuhc_ar_4_3,c_fill,g_auto__c_scale,w_1367.jpg 1367w,
+bartlomiej-valery-walendziak-w2-d_1_ydwuhc_ar_4_3,c_fill,g_auto__c_scale,w_1424.jpg 1424w,
+bartlomiej-valery-walendziak-w2-d_1_ydwuhc_ar_4_3,c_fill,g_auto__c_scale,w_1440.jpg 1440w">
+<source
+media="(min-width: 992px) and (max-width: 1199px)"
+sizes="(max-width: 2133px) 90vw, 1920px"
+srcset="
+bartlomiej-valery-walendziak-w2-d_1_ydwuhc_ar_16_9,c_fill,g_auto__c_scale,w_893.jpg 893w,
+bartlomiej-valery-walendziak-w2-d_1_ydwuhc_ar_16_9,c_fill,g_auto__c_scale,w_977.jpg 977w,
+bartlomiej-valery-walendziak-w2-d_1_ydwuhc_ar_16_9,c_fill,g_auto__c_scale,w_1059.jpg 1059w,
+bartlomiej-valery-walendziak-w2-d_1_ydwuhc_ar_16_9,c_fill,g_auto__c_scale,w_1135.jpg 1135w,
+bartlomiej-valery-walendziak-w2-d_1_ydwuhc_ar_16_9,c_fill,g_auto__c_scale,w_1281.jpg 1281w,
+bartlomiej-valery-walendziak-w2-d_1_ydwuhc_ar_16_9,c_fill,g_auto__c_scale,w_1351.jpg 1351w,
+bartlomiej-valery-walendziak-w2-d_1_ydwuhc_ar_16_9,c_fill,g_auto__c_scale,w_1457.jpg 1457w,
+bartlomiej-valery-walendziak-w2-d_1_ydwuhc_ar_16_9,c_fill,g_auto__c_scale,w_1920.jpg 1920w">
+<img
+sizes="(max-width: 2133px) 90vw, 1920px"
+srcset="
+bartlomiej-valery-walendziak-w2-d_1_ydwuhc_c_scale,w_1080.jpg 1080w,
+bartlomiej-valery-walendziak-w2-d_1_ydwuhc_c_scale,w_1155.jpg 1155w,
+bartlomiej-valery-walendziak-w2-d_1_ydwuhc_c_scale,w_1231.jpg 1231w,
+bartlomiej-valery-walendziak-w2-d_1_ydwuhc_c_scale,w_1303.jpg 1303w,
+bartlomiej-valery-walendziak-w2-d_1_ydwuhc_c_scale,w_1375.jpg 1375w,
+bartlomiej-valery-walendziak-w2-d_1_ydwuhc_c_scale,w_1441.jpg 1441w,
+bartlomiej-valery-walendziak-w2-d_1_ydwuhc_c_scale,w_1920.jpg 1920w"
+src="bartlomiej-valery-walendziak-w2-d_1_ydwuhc_c_scale,w_1920.jpg"
+alt="">
+</picture>
