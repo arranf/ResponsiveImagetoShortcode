@@ -3,13 +3,15 @@
   "version": "1.0.0",
   "description": "A tool to tranform Responsive Breakpoints https://www.responsivebreakpoints.com/ HTML into a Hugo shortcode",
   "main": "index.js",
-  "author": "Arran France <arranf@gmail.com>",
+  "author": "Arran France <arran@arranfrance.com>",
   "license": "MIT",
   "private": true,
   "scripts": {
     "start": "node index.js"
   },
   "dependencies": {
-    "cheerio": "^1.0.0-rc.2"
+    "cheerio": "^1.0.0-rc.2",
+    "commander": "^2.19.0",
+    "sqip": "^0.3.3"
   }
 }
