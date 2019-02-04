@@ -6,8 +6,9 @@ const cheerio = require('cheerio');
 const sqip = require('sqip');
 
 function getHtml(program) {
-    const input = fs.readFileSync(program.input);
-    return cheerio.load(input);
+    const inputLocation = program.input ? program.input : './input.txt'
+    const html = fs.readFileSync(inputLocation);
+    return cheerio.load(html);
 }
 
 function prefixSource(srcset) {
@@ -21,7 +22,7 @@ function getFallbackImageData($) {
     const img = $('img');
     const sizes = img.attr('sizes');
     const srcset = prefixSource(img.attr('srcset'));
-    const src = 'https://files.arranfrance.com/images/' + img.attr('src');
+    const src = 'https://files.arranfrance.com/images/' + prefixSource(img.attr('src'));
     const squipPlaceholder = sqip({
         filename: img.attr('src'),
         numberOfPrimitives: 10
@@ -38,14 +39,13 @@ function getPrefix(program) {
 }
 
 program
-  .version('0.0.1')
-  //   .option('-o, --overwrite','Overwrite the data file as opposed to appending to it')
+  .version('0.0.3')
   .option('-n, --name <required>', 'The image name')
-  .option('-i, --input <required>','The input file')
-  .option('-c, --caption [optional]', 'The image caption')
-  .option('-l, --location [optional]','The location of the data file. Defaults to ./data/images.json')
+  .option('-z, --zip <required>', 'The input zip file containing images')
+  .option('-i, --input [optional]','The input file (HTML). Defaults to input.txt.')
+  .option('-o, --output [optional]','The location of the data file. Defaults to ./data/images.json')
   .option('-d, --directory [optional]','The directory suffix that S3 files are located in')
-  .parse(process.argv); // end with parse to parse through the 
+  .parse(process.argv);
 
 const $ = getHtml(program);
 
@@ -60,21 +60,31 @@ const sources = [];
 $('source').each((i, elem) => {
     const source = $(elem);
     const media = source.attr('media');
+    const minWidth = /max-width: (\d+)px/.exec(media)[1];
     const sizes = source.attr('sizes');
     const srcset = prefixSource(source.attr('srcset'));
     const split = srcset.split('/')
     const filename = split[split.length - 1].split(' ')[0];
     const placeholder = sqip({
         filename,
-        numberOfPrimitives: 10
+        numberOfPrimitives: minWidth > 900 ? 20 : 10
     });
     sources.push({media, sizes, srcset, placeholder: placeholder.svg_base64encoded});
 });
 
 const data = {
     name: program.name,
-    caption: program.caption,
     fallback: fallbackImage, 
     sources: sources
 };
-console.log(JSON.stringify(data))
+
+const outputLocation = program.output ? program.output : './data/images.json'
+
+const images = JSON.parse(fs.readFileSync(outputLocation));
+let existingData = images.find(a => a.name === data.name);
+if (existingData) {
+    existingData = data;
+} else {
+    images.push(data);
+}
+fs.writeFileSync(outputLocation, JSON.stringify(images));
