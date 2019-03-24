@@ -10,6 +10,7 @@
     "start": "node index.js"
   },
   "dependencies": {
+    "adm-zip": "^0.4.13",
     "cheerio": "^1.0.0-rc.2",
     "commander": "^2.19.0",
     "sqip": "^0.3.3"

@@ -5,3 +5,6 @@
 *.zip
 output.json
 input.txt
+index-win.exe
+index-linux
+index-macos

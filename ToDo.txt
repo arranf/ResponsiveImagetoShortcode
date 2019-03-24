@@ -1,5 +1,5 @@
-* Process initial image using compression (mozjpeg etc.)
 * Upload image to responsivebreakpoints.com
 * Upload breakpoint assets to S3
-* Append data to hugo JSON file
+* Print to stdout a copyable version of the shortcode
+* Process initial image using compression (mozjpeg etc.)
 * Rewrite in Rust
