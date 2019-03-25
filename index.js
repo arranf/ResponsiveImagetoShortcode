@@ -31,7 +31,6 @@ const BUCKET_NAME = 'https://files.arranfrance.com/';
 // Create a temporary directory to unzip the zip directory to. Returns the directory path.
 async function unzipImages(program) {
     const directory = await fileService.makeTempDirectory();
-    console.debug(`Unzipping to ${directory}`)
     const zip = new admZip(program.zip);
     zip.extractAllTo(directory);
     const subDirectory = fs.readdirSync(directory)[0];
@@ -43,7 +42,7 @@ async function uploadImages(imageDirectory, program) {
     const files = fs.readdirSync(imageDirectory);
     const prefix = getPrefix(program);
     try {
-        await Promise.all(files.map(fileName => s3.uploadtoS3(prefix + fileName, path.join(imageDirectory, fileName))));
+        await Promise.all(files.map(fileName => s3.uploadtoS3(path.join(prefix, fileName), path.join(imageDirectory, fileName))));
     } catch (e) {
         console.error('Error uploading images to S3', e)
     }
@@ -94,7 +93,6 @@ function prefixSource(srcset, prefix) {
 
 // Write to either the data template provided or default to ./data/images.json, updating where possible
 function writeToHugoDataTemplate(program, data) {
-    console.log(data)
     const outputLocation = program.output ? program.output : './data/images.json';
     const dataTemplate = JSON.parse(fs.readFileSync(outputLocation));
     let existingData = dataTemplate.find(a => a.name === data.name);
