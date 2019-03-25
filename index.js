@@ -1,36 +1,52 @@
 #!/usr/bin/env node
 
 /*
-    This program is used to produce a Hugo shortcode from the input of a .zip file and HTML from https://responsivebreakpoints.com.
-    It does this in two steps: 
-        1. Writing to the Hugo images data template (https://gohugo.io/templates/data-templates/)
-        2. Providing a shortcode that can be copy-pasted with values autofilled
-        3. Uploading images in a .zip file to S3
-    I go into detail on the reasons behind this program here: https://blog.arranfrance.com/post/responsive-blog-images/
+This program is used to produce a Hugo shortcode from the input of a .zip file and HTML from https://responsivebreakpoints.com.
+It does this in two steps: 
+1. Writing to the Hugo images data template (https://gohugo.io/templates/data-templates/)
+2. Providing a shortcode that can be copy-pasted with values autofilled
+3. Uploading images in a .zip file to S3
+I go into detail on the reasons behind this program here: https://blog.arranfrance.com/post/responsive-blog-images/
 
-    An example program input is in this directory labelled: input.example.txt
+An example program input is in this directory labelled: input.example.txt
 */
 
 const fs = require('fs');
-const AdmZip = require('adm-zip');
+const path = require('path');
+
+const admZip = require('adm-zip');
 const program = require('commander');
 const cheerio = require('cheerio');
+require('dotenv').config();
 const sqip = require('sqip');
 
 const fileService = require('./file'); 
+const s3 = require('./s3');
 
 const MONTH_NAMES = ["Jan", "Feb", "Mar", "Apr", "May", "Jun",
-  "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"
+"Jul", "Aug", "Sep", "Oct", "Nov", "Dec"
 ];
+const BUCKET_NAME = 'https://files.arranfrance.com/';
 
 // Create a temporary directory to unzip the zip directory to. Returns the directory path.
 async function unzipImages(program) {
     const directory = await fileService.makeTempDirectory();
     console.debug(`Unzipping to ${directory}`)
-    const zip = new AdmZip(program.zip);
+    const zip = new admZip(program.zip);
     zip.extractAllTo(directory);
     const subDirectory = fs.readdirSync(directory)[0];
     return `${directory}/${subDirectory}`;
+}
+
+// Upload all the images in a directory to S3
+async function uploadImages(imageDirectory, program) {
+    const files = fs.readdirSync(imageDirectory);
+    const prefix = getPrefix(program);
+    try {
+        await Promise.all(files.map(fileName => s3.uploadtoS3(prefix + fileName, path.join(imageDirectory, fileName))));
+    } catch (e) {
+        console.error('Error uploading images to S3', e)
+    }
 }
 
 // Load HTML from either the file path given or default to input.txt
@@ -41,11 +57,11 @@ function getHtml(program) {
 }
 
 // Create a SQIP (https://www.afasterweb.com/2018/04/25/smooth-out-low-quality-placeholders-with-sqip/) to use as a placeholder for **only** the img tag
-function getFallbackImageData($, imageDirectory) {
+function getFallbackImageData($, imageDirectory, prefix) {
     const img = $('img');
     const sizes = img.attr('sizes');
-    const srcset = prefixSource(img.attr('srcset'));
-    const src = 'https://files.arranfrance.com/images/' + prefixSource(img.attr('src'));
+    const srcset = prefixSource(img.attr('srcset'), prefix);
+    const src = prefixSource(img.attr('src'), prefix);
     const squipPlaceholder = sqip({
         filename: `${imageDirectory}/${img.attr('src')}`,
         numberOfPrimitives: 10
@@ -56,10 +72,16 @@ function getFallbackImageData($, imageDirectory) {
 
 // Get the URL that the image is hosted at taking into account any possible sub directories provided to the program
 function getPrefix(program) {
-    const directory = program.directory ? program.directory[program.directory.length - 1] === '/' ? program.directory : program.directory + '/' : '';
+    let directory = ''
+    if (program.directory && program.directory[program.directory.length - 1] === '/') {
+        directory = program.directory
+    } else if (program.directory) {
+        directory = program.directory + '/'
+    }
+
     const year = new Date().getFullYear();
     const month = MONTH_NAMES[new Date().getMonth()];
-    return `https://files.arranfrance.com/images/${year}/${month}/${directory}`;
+    return `images/${year}/${month}/${directory}`;
 }
 
 // Prefix each srcset image with the image's location on the web
@@ -72,13 +94,13 @@ function prefixSource(srcset, prefix) {
 
 // Write to either the data template provided or default to ./data/images.json, updating where possible
 function writeToHugoDataTemplate(program, data) {
+    console.log(data)
     const outputLocation = program.output ? program.output : './data/images.json';
     const dataTemplate = JSON.parse(fs.readFileSync(outputLocation));
     let existingData = dataTemplate.find(a => a.name === data.name);
     if (existingData) {
         existingData = data;
-    }
-    else {
+    } else {
         dataTemplate.push(data);
     }
     fs.writeFileSync(outputLocation, JSON.stringify(dataTemplate));
@@ -88,21 +110,22 @@ function writeToHugoDataTemplate(program, data) {
 
 async function main() {
     program
-    .version('0.0.4')
-    .option('-n, --name <required>', 'The image name')
-    .option('-z, --zip <required>', 'The input zip file containing images')
-    .option('-i, --input [optional]','The input file (HTML). Defaults to input.txt.')
-    .option('-o, --output [optional]','The location of the data file. Defaults to ./data/images.json')
-    .option('-d, --directory [optional]','The directory suffix that S3 files are located in')
-    .parse(process.argv);
-
+        .version('0.0.4')
+        .option('-n, --name <required>', 'The image name')
+        .option('-z, --zip <required>', 'The input zip file containing images')
+        .option('-i, --input [optional]','The input file (HTML). Defaults to input.txt.')
+        .option('-o, --output [optional]','The location of the data file. Defaults to ./data/images.json')
+        .option('-d, --directory [optional]','The directory suffix that S3 files are located in')
+        .parse(process.argv);
+    
     const imageDirectory = await unzipImages(program);
+    await uploadImages(imageDirectory, program);
 
-    console.log(`Temporary directory is ${imageDirectory}`)
+    console.log(`Temporary directory is ${imageDirectory}`);
 
     const $ = getHtml(program);
-    const prefix = getPrefix(program);
-    const fallbackImage = getFallbackImageData($, imageDirectory);
+    const prefix = BUCKET_NAME + getPrefix(program);
+    const fallbackImage = getFallbackImageData($, imageDirectory, prefix);
 
     const sources = [];
     $('source').each((i, elem) => {

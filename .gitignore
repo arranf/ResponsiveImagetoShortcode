@@ -8,3 +8,5 @@ input.txt
 index-win.exe
 index-linux
 index-macos
+
+\.env

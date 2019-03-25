@@ -10,7 +10,7 @@
             "request": "launch",
             "name": "Launch Program",
             "program": "${workspaceFolder}/index.js",
-            "args": ["-i", "./input.txt"]
+            "args": ["-i", "${workspaceFolder}/input.txt", "-n", "arran", "-z", "~/Downloads/fwr4hcsbnldj24ccizyi.zip"]
         }
     ]
 }
