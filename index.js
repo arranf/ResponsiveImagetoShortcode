@@ -2,7 +2,7 @@
 
 /*
 This program is used to produce a Hugo shortcode from the input of a .zip file and HTML from https://responsivebreakpoints.com.
-It does this in two steps: 
+It does this in two steps:
 1. Writing to the Hugo images data template (https://gohugo.io/templates/data-templates/)
 2. Providing a shortcode that can be copy-pasted with values autofilled
 3. Uploading images in a .zip file to S3
@@ -19,12 +19,12 @@ const program = require('commander');
 const cheerio = require('cheerio');
 require('dotenv').config();
 const sqip = require('sqip');
-
-const fileService = require('./file'); 
+const parallelLimit = require('async/parallelLimit');
+const fileService = require('./file');
 const s3 = require('./s3');
 
 const MONTH_NAMES = ["Jan", "Feb", "Mar", "Apr", "May", "Jun",
-"Jul", "Aug", "Sep", "Oct", "Nov", "Dec"
+    "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"
 ];
 const BUCKET_NAME = 'https://files.arranfrance.com/';
 
@@ -41,11 +41,7 @@ async function unzipImages(program) {
 async function uploadImages(imageDirectory, program) {
     const files = fs.readdirSync(imageDirectory);
     const prefix = getPrefix(program);
-    try {
-        await Promise.all(files.map(fileName => s3.uploadtoS3(path.join(prefix, fileName), path.join(imageDirectory, fileName))));
-    } catch (e) {
-        console.error('Error uploading images to S3', e)
-    }
+    await Promise.all(files.map(fileName => s3.uploadtoS3(path.join(prefix, fileName), path.join(imageDirectory, fileName))));
 }
 
 // Load HTML from either the file path given or default to input.txt
@@ -66,7 +62,7 @@ function getFallbackImageData($, imageDirectory, prefix) {
         numberOfPrimitives: 10
     });
 
-    return {sizes, srcset, src, placeholder: squipPlaceholder.svg_base64encoded};
+    return { sizes, srcset, src, placeholder: squipPlaceholder.svg_base64encoded };
 }
 
 // Get the URL that the image is hosted at taking into account any possible sub directories provided to the program
@@ -105,19 +101,32 @@ function writeToHugoDataTemplate(program, data) {
     console.log(`Written to ${outputLocation}`)
 }
 
+// Write a copyable version of the short to the console
+function outputShortCodetoConsole(program) {
+    const template = `{{< picture name="${program.name}" caption="" >}}`;
+    console.log(template);
+}
+
 
 async function main() {
     program
         .version('0.0.4')
         .option('-n, --name <required>', 'The image name')
         .option('-z, --zip <required>', 'The input zip file containing images')
-        .option('-i, --input [optional]','The input file (HTML). Defaults to input.txt.')
-        .option('-o, --output [optional]','The location of the data file. Defaults to ./data/images.json')
-        .option('-d, --directory [optional]','The directory suffix that S3 files are located in')
+        .option('-i, --input [optional]', 'The input file (HTML). Defaults to input.txt.')
+        .option('-o, --output [optional]', 'The location of the data file. Defaults to ./data/images.json')
+        .option('-d, --directory [optional]', 'The directory suffix that S3 files are located in')
         .parse(process.argv);
-    
+
+    console.log('Unzipping images')
     const imageDirectory = await unzipImages(program);
-    await uploadImages(imageDirectory, program);
+    console.log('Uploading images')
+    try {
+        await uploadImages(imageDirectory, program);
+    } catch (e) {
+        console.error('Error uploading to S3');
+        throw e
+    }
 
     console.log(`Temporary directory is ${imageDirectory}`);
 
@@ -141,15 +150,16 @@ async function main() {
             filename: path,
             numberOfPrimitives: minWidth > 900 ? 20 : 10
         });
-        sources.push({media, sizes, srcset, placeholder: placeholder.svg_base64encoded});
+        sources.push({ media, sizes, srcset, placeholder: placeholder.svg_base64encoded });
     });
 
     const data = {
         name: program.name,
-        fallback: fallbackImage, 
+        fallback: fallbackImage,
         sources: sources
     };
     writeToHugoDataTemplate(program, data);
+    outputShortCodetoConsole(program, data);
 }
 
 
