@@ -19,7 +19,6 @@ const program = require('commander');
 const cheerio = require('cheerio');
 require('dotenv').config();
 const sqip = require('sqip');
-const parallelLimit = require('async/parallelLimit');
 const fileService = require('./file');
 const s3 = require('./s3');
 
@@ -42,6 +41,7 @@ async function uploadImages(imageDirectory, program) {
     const files = fs.readdirSync(imageDirectory);
     const prefix = getPrefix(program);
     await Promise.all(files.map(fileName => s3.uploadtoS3(path.join(prefix, fileName), path.join(imageDirectory, fileName))));
+    // files.map await s3.uploadtoS3(path.join(prefix, files[0]), path.join(imageDirectory, files[0]));
 }
 
 // Load HTML from either the file path given or default to input.txt

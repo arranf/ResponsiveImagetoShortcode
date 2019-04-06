@@ -1,4 +1,5 @@
 const { readFile } = require('./file');
+const fs = require('fs');
 const AWS = require('aws-sdk');
 
 AWS.config.update({
@@ -32,7 +33,7 @@ async function _uploadtoS3(fileName, path) {
   console.log('Uploading ' + path)
   let body;
   try {
-    body = await readFile(path);
+    body = fs.createReadStream(path);
   } catch (e) {
     console.error('Error retrieving file to upload to S3: ' + fileName);
     throw e;
